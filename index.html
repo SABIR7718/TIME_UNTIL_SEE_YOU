@@ -1,0 +1,59 @@
+<!doctype html>
+
+<html lang="en">  
+<head>  
+<meta charset="utf-8" />  
+<meta name="viewport" content="width=device-width,initial-scale=1" />  
+<title>My Heart SABANA ❤️</title>
+
+<!-- external CSS -->
+<link rel="stylesheet" href="style.css">
+
+</head>  
+
+</div>
+<body>  
+  <div class="heart-name" id="heartName">  
+  ˜”*°•𝙾𝚗𝚕𝚢 𝙵𝚘𝚛 𝚂𝙰𝙱𝙰𝙽𝙰•°*”˜  
+</div> 
+
+<!-- SONG PICKER POPUP -->
+<div id="songOverlay"></div>
+
+<div id="songPopup">
+  <h3 style="margin-bottom:12px; font-size:18px;">Select a Song 🎵</h3>
+
+  <div id="songList"></div>
+</div> 
+
+<div class="card" role="main" aria-labelledby="title">
+  <div class="timer" aria-live="polite">
+    <div class="big" id="display">--:--:--:--</div>
+    <div class="parts" id="parts">
+      <div class="part"><div class="num" id="days">--</div><div class="txt">Days</div></div>
+      <div class="part"><div class="num" id="hours">--</div><div class="txt">Hours</div></div>
+      <div class="part"><div class="num" id="minutes">--</div><div class="txt">Minutes</div></div>
+      <div class="part"><div class="num" id="seconds">--</div><div class="txt">Seconds</div></div>
+    </div>
+  </div>
+
+  <h1 id="title">Countdown until I see you</h1>
+  <p class="lead">Every second brings me closer to you 💕</p>
+
+  <div class="controls">
+    <input id="dt" type="datetime-local" aria-label="Choose meeting date/time">
+    <button id="saveBtn" class="secondary">I Meet Her Again 🥰</button>
+    <button id="playBtn">▶️ Play</button>
+  </div>
+
+  <p class="small-note">If the time is in the future the timer counts down; otherwise it shows elapsed time.</p>
+
+</div>
+
+<div id="hearts" aria-hidden="true"></div>
+
+<!-- external JS -->
+<script src="script.js"></script>
+
+</body>
+</html>

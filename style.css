@@ -1,0 +1,294 @@
+*{box-sizing:border-box;margin:0;padding:0}  
+html,body{height:100%}  
+body{  
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;  
+  color:#fff;  
+  display:flex;  
+  flex-direction:column;  
+  align-items:center;  
+  justify-content:center;  
+  gap:18px;  
+  overflow:hidden;  
+  text-align:center;  
+  padding:24px;  
+  user-select:none;  /* Dreamy animated gradient background */  
+  background: linear-gradient(135deg,#0f172a 0%,#3a1c71 40%,#d76d77 100%);  
+  background-size: 300% 300%;  
+  animation: dreamyGradient 25s ease infinite;
+}
+
+@keyframes dreamyGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Disable long-press blue highlight on song items */
+.song-item,
+.song-item * {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Optional floating light overlay for depth */
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.06) 2px, transparent 2px);
+  background-size: 60px 60px;
+  animation: floatLights 30s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes floatLights {
+  0% { background-position: 0 0; }
+  100% { background-position: 60px 60px; }
+}
+
+.heart-name{
+  font-size:32px;
+  font-weight:800;
+  background:linear-gradient(90deg,#ff8da1,#ffd1dc);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 12px rgba(255,150,180,0.6);
+  z-index:3;
+}
+
+#hearts{position:fixed;inset:0;pointer-events:none;z-index:1}
+
+.photo-heart{
+  position:absolute;
+  width:170px;
+  height:170px;
+  transform-origin:center;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  z-index:1;
+}
+
+@keyframes rise {
+  0%{ transform: translateY(100vh) scale(0.95) rotate(var(--tilt)); opacity:0; }
+  15%{ opacity:1; }
+  50%{ transform: translateY(50vh) scale(1.05) rotate(calc(var(--tilt) + 10deg)); opacity:1; }
+  100%{ transform: translateY(-30vh) scale(1.1) rotate(calc(var(--tilt) + 30deg)); opacity:0; }
+}
+/* --- Popup Fade Animation --- */
+.popup-show {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+
+#songPopup {
+  /* moved from inline: exact same rules as original */
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 350px;
+  background: rgba(255,255,255,0.01); /* almost transparent */
+  backdrop-filter: blur(4px);
+  border-radius: 18px;
+  padding: 18px;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 0 22px rgba(0,0,0,0.4);
+
+  /* kept the original transition/animation defaults */
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* --- Overlay Fade Animation --- */
+#songOverlay {
+  /* moved from inline: exact same rules as original */
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.01); /* almost invisible */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9998;
+  display: none;
+
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* songList inline grid moved to CSS to preserve layout exactly */
+#songList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+#playBtn {
+  height: 37px;          /* fixed height */
+  width: 90px;          /* fixed width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;      /* stop layout shift */
+}
+.card{
+  position:relative;
+  z-index:2;
+  width:min(540px,96vw);
+  background:rgba(255,255,255,0.06);
+  border-radius:18px;
+  padding:26px;
+  box-shadow:0 12px 30px rgba(2,6,23,0.6);
+  backdrop-filter:blur(6px) saturate(120%);
+  border:1px solid rgba(255,255,255,0.08);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  align-items:center;
+  text-align:center;
+}
+
+h1{
+  font-size:20px;
+  margin-bottom:2px;
+  background:linear-gradient(90deg,#ff8da1,#ffd1dc);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+p.lead{opacity:0.9;font-size:14px;margin-bottom:6px}
+
+.controls{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  justify-content:center;
+  align-items:center
+}
+
+input[type=datetime-local],button{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  color:#fff;
+  padding:10px 12px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  outline:none;
+  -webkit-tap-highlight-color: transparent; /* 🧊 removes blue tap highlight */
+  transition: transform 0.15s ease, background 0.3s ease;
+}
+
+button:Active {
+  transform: scale(0.95);
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 0 12px rgba(255,255,255,0.3);
+}
+button{cursor:pointer;font-weight:700}
+button.secondary{border-style:dashed;opacity:0.95}
+
+.timer{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:16px 20px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.04);
+  width:100%;
+}
+.big{
+  font-weight:800;
+  font-size:36px;
+  letter-spacing:1px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+  background:linear-gradient(90deg,#ff9eb5,#ffd6e0);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.parts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.part{padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.05);text-align:center;min-width:72px}
+.part .num{font-size:20px;font-weight:800;font-family:monospace}
+.part .txt{font-size:12px;opacity:0.85;margin-top:6px}
+
+.small-note{font-size:13px;opacity:0.8;margin-top:6px}
+
+.song-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.13);
+  padding: 8px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.song-item:active {
+  transform: scale(0.97);
+  background: rgba(255,255,255,0.23);
+}
+
+.song-thumb {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.song-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  margin-top: 2px;
+}
+
+.song-title {
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.song-artist {
+  font-size: 9px;
+  opacity: 0.65;
+  line-height: 1.05;
+}
+
+/* Equalizer container */
+.audio-bars {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;   /* TRUE CENTER alignment */
+  height: 20px;
+  overflow: hidden;
+}
+
+/* Each bar uses CENTER as animation origin */
+.audio-bars div {
+  width: 3px;
+  background: #fff;
+  border-radius: 4px;
+  transform-origin: center;   /* 🔥 THIS MAKES THE WAVE FORM FROM CENTER */
+  animation: centerWave 1s infinite ease-in-out;
+}
+
+/* Symmetrical delays (center strongest) */
+.audio-bars div:nth-child(1) { animation-delay: 0.15s; }
+.audio-bars div:nth-child(2) { animation-delay: 0.25s; }
+.audio-bars div:nth-child(3) { animation-delay: 0s; }       /* CENTER BAR */
+.audio-bars div:nth-child(4) { animation-delay: 0.25s; }
+.audio-bars div:nth-child(5) { animation-delay: 0.15s; }
+
+/* CENTER EXPANDING WAVE */
+@keyframes centerWave {
+  0%,100% { height: 6px; }     /* small idle size */
+  20%     { height: 12px; }    /* slight expand */
+  45%     { height: 20px; }    /* full expansion FROM CENTER */
+  70%     { height: 10px; }
+  85%     { height: 16px; }    /* bounce like real EQ */
+}

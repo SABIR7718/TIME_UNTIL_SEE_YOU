@@ -1,0 +1,797 @@
+<!doctype html>
+
+<html lang="en">  
+<head>  
+<meta charset="utf-8" />  
+<meta name="viewport" content="width=device-width,initial-scale=1" />  
+<title>My Heart SABANA ❤️</title>  
+<style>  
+  *{box-sizing:border-box;margin:0;padding:0}  
+  html,body{height:100%}  
+  body{  
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;  
+    color:#fff;  
+    display:flex;  
+    flex-direction:column;  
+    align-items:center;  
+    justify-content:center;  
+    gap:18px;  
+    overflow:hidden;  
+    text-align:center;  
+    padding:24px;  
+    user-select:none;  /* Dreamy animated gradient background */  
+background: linear-gradient(135deg,#0f172a 0%,#3a1c71 40%,#d76d77 100%);  
+background-size: 300% 300%;  
+animation: dreamyGradient 25s ease infinite;
+
+}
+
+@keyframes dreamyGradient {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+
+/* Disable long-press blue highlight on song items */
+.song-item,
+.song-item * {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Optional floating light overlay for depth */
+body::after {
+content: "";
+position: absolute;
+inset: 0;
+background: radial-gradient(circle, rgba(255,255,255,0.06) 2px, transparent 2px);
+background-size: 60px 60px;
+animation: floatLights 30s linear infinite;
+pointer-events: none;
+}
+
+@keyframes floatLights {
+0% { background-position: 0 0; }
+100% { background-position: 60px 60px; }
+}
+
+.heart-name{
+font-size:32px;
+font-weight:800;
+background:linear-gradient(90deg,#ff8da1,#ffd1dc);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+text-shadow:0 0 12px rgba(255,150,180,0.6);
+z-index:3;
+}
+
+#hearts{position:fixed;inset:0;pointer-events:none;z-index:1}
+
+.photo-heart{
+position:absolute;
+width:170px;
+height:170px;
+transform-origin:center;
+animation-timing-function: linear;
+animation-iteration-count: 1;
+z-index:1;
+}
+
+@keyframes rise {
+0%{ transform: translateY(100vh) scale(0.95) rotate(var(--tilt)); opacity:0; }
+15%{ opacity:1; }
+50%{ transform: translateY(50vh) scale(1.05) rotate(calc(var(--tilt) + 10deg)); opacity:1; }
+100%{ transform: translateY(-30vh) scale(1.1) rotate(calc(var(--tilt) + 30deg)); opacity:0; }
+}
+/* --- Popup Fade Animation --- */
+.popup-show {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+
+#songPopup {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* --- Overlay Fade Animation --- */
+#songOverlay {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+#playBtn {
+  height: 37px;          /* fixed height */
+  width: 90px;          /* fixed width */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;      /* stop layout shift */
+}
+.card{
+position:relative;
+z-index:2;
+width:min(540px,96vw);
+background:rgba(255,255,255,0.06);
+border-radius:18px;
+padding:26px;
+box-shadow:0 12px 30px rgba(2,6,23,0.6);
+backdrop-filter:blur(6px) saturate(120%);
+border:1px solid rgba(255,255,255,0.08);
+display:flex;
+flex-direction:column;
+gap:14px;
+align-items:center;
+text-align:center;
+}
+
+h1{
+font-size:20px;
+margin-bottom:2px;
+background:linear-gradient(90deg,#ff8da1,#ffd1dc);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+p.lead{opacity:0.9;font-size:14px;margin-bottom:6px}
+
+.controls{
+display:flex;
+flex-direction:column;
+gap:10px;
+justify-content:center;
+align-items:center
+}
+
+input[type=datetime-local],button{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  color:#fff;
+  padding:10px 12px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  outline:none;
+  -webkit-tap-highlight-color: transparent; /* 🧊 removes blue tap highlight */
+  transition: transform 0.15s ease, background 0.3s ease;
+}
+
+button:active {
+  transform: scale(0.95);
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 0 12px rgba(255,255,255,0.3);
+}
+button{cursor:pointer;font-weight:700}
+button.secondary{border-style:dashed;opacity:0.95}
+
+.timer{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:10px;
+padding:16px 20px;
+border-radius:12px;
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.04);
+width:100%;
+}
+.big{
+font-weight:800;
+font-size:36px;
+letter-spacing:1px;
+font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+background:linear-gradient(90deg,#ff9eb5,#ffd6e0);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.parts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.part{padding:8px 12px;border-radius:8px;background:rgba(255,255,255,0.05);text-align:center;min-width:72px}
+.part .num{font-size:20px;font-weight:800;font-family:monospace}
+.part .txt{font-size:12px;opacity:0.85;margin-top:6px}
+
+.small-note{font-size:13px;opacity:0.8;margin-top:6px}
+
+.song-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.13);
+  padding: 8px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.song-item:active {
+  transform: scale(0.97);
+  background: rgba(255,255,255,0.23);
+}
+
+.song-thumb {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.song-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  margin-top: 2px;
+}
+
+.song-title {
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.song-artist {
+  font-size: 9px;
+  opacity: 0.65;
+  line-height: 1.05;
+}
+
+/* Equalizer container */
+.audio-bars {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;   /* TRUE CENTER alignment */
+  height: 20px;
+  overflow: hidden;
+}
+
+/* Each bar uses CENTER as animation origin */
+.audio-bars div {
+  width: 3px;
+  background: #fff;
+  border-radius: 4px;
+  transform-origin: center;   /* 🔥 THIS MAKES THE WAVE FORM FROM CENTER */
+  animation: centerWave 1s infinite ease-in-out;
+}
+
+/* Symmetrical delays (center strongest) */
+.audio-bars div:nth-child(1) { animation-delay: 0.15s; }
+.audio-bars div:nth-child(2) { animation-delay: 0.25s; }
+.audio-bars div:nth-child(3) { animation-delay: 0s; }       /* CENTER BAR */
+.audio-bars div:nth-child(4) { animation-delay: 0.25s; }
+.audio-bars div:nth-child(5) { animation-delay: 0.15s; }
+
+/* CENTER EXPANDING WAVE */
+@keyframes centerWave {
+  0%,100% { height: 6px; }     /* small idle size */
+  20%     { height: 12px; }    /* slight expand */
+  45%     { height: 20px; }    /* full expansion FROM CENTER */
+  70%     { height: 10px; }
+  85%     { height: 16px; }    /* bounce like real EQ */
+}
+</style>
+
+</head>  
+
+</div>
+<body>  
+  <div class="heart-name" id="heartName">  
+  ˜”*°•𝙾𝚗𝚕𝚢 𝙵𝚘𝚛 𝚂𝙰𝙱𝙰𝙽𝙰•°*”˜  
+</div> 
+
+<!-- SONG PICKER POPUP -->
+<div id="songOverlay" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.01); /* almost invisible */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9998;
+  display: none;
+"></div>
+<div id="songPopup" style="
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 350px;
+  background: rgba(255,255,255,0.01); /* almost transparent */
+  backdrop-filter: blur(4px);
+  border-radius: 18px;
+  padding: 18px;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 0 22px rgba(0,0,0,0.4);
+">
+  <h3 style="margin-bottom:12px; font-size:18px;">Select a Song 🎵</h3>
+
+  <div id="songList" style="
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  "></div>
+</div> 
+
+<script>
+const audio = new Audio();
+
+window.onload = function() {
+
+  const playBtn = document.getElementById("playBtn");
+  const songPopup = document.getElementById("songPopup");
+  const songList = document.getElementById("songList");
+
+  
+  // =============================
+// SONG CONFIG (edit this only)
+// =============================
+const songs = [
+  {
+    file: "songs/song.mp3",
+    thumb: "thumbs/thumb.png",
+    title: "DJ AKU CALON MANTU TERBAIK MAMAMU FULLBASS",
+    artist: ""
+  },
+  {
+    file: "songs/song2.mp3",
+    thumb: "thumbs/thumb2.png",
+    title: "DJ CALON MANTU IDAMAN SLOW VIRAL TIKTOK FULL SONG",
+    artist: ""
+  },
+  {
+    file: "songs/song3.mp3",
+    thumb: "thumbs/thumb3.png",
+    title: "DJ TABOLA BALE X CALON MANTU IDAMAN SLOW VIRAL TIKTOK",
+    artist: ""
+  },
+  {
+    file: "songs/song4.mp3",
+    thumb: "thumbs/thumb4.png",
+    title: "DJ CALON MANTU TERBAIK MAMAMU X TABOLA BALE PLAT KT VIRAL",
+    artist: ""
+  },
+  {
+    file: "songs/song5.mp3",
+    thumb: "thumbs/thumb5.png",
+    title: "Mood - Lofi",
+    artist: ""
+  },
+  {
+    file: "songs/song6.mp3",
+    thumb: "thumbs/thumb6.png",
+    title: "Tu hai Kahan",
+    artist: ""
+  }
+
+];
+
+
+// =============================
+// POPUP SONG LOADER
+// =============================
+function loadSongs() {
+  const songList = document.getElementById("songList");
+  const songPopup = document.getElementById("songPopup");
+  songList.innerHTML = "";
+
+  songs.forEach(song => {
+    const div = document.createElement("div");
+    div.className = "song-item";
+
+    div.innerHTML = `
+  <img class="song-thumb" src="${song.thumb}">
+  
+  <div class="song-meta">
+    <div class="song-title">${song.title}</div>
+    <div class="song-artist">${song.artist}</div>
+  </div>
+`;
+
+    div.onclick = () => {
+      audio.src = song.file;
+      audio.play();
+
+      // DJ animation on play button
+      playBtn.innerHTML = `
+  <div class="audio-bars">
+    <div></div><div></div><div></div><div></div><div></div>
+  </div>
+`;
+
+      songPopup.style.display = "none";
+      document.getElementById("songOverlay").style.display = "none";
+    };
+
+    songList.appendChild(div);
+  });
+
+  songPopup.style.display = "block";
+songOverlay.style.display = "block";
+
+setTimeout(() => {
+  songPopup.classList.add("popup-show");
+  songOverlay.style.opacity = "1";
+}, 10);
+}
+
+
+// =============================
+// CLICK EVENTS
+// =============================
+
+window.addEventListener("click", e => {
+  const popup = document.getElementById("songPopup");
+  const overlay = document.getElementById("songOverlay");
+
+  if (e.target === overlay) {
+
+    // Fade-out animation
+    popup.classList.remove("popup-show");
+    overlay.style.opacity = "0";
+
+    // Hide AFTER animation
+    setTimeout(() => {
+      popup.style.display = "none";
+      overlay.style.display = "none";
+    }, 350);
+  }
+});
+
+playBtn.addEventListener("click", () => {
+
+  // If song is playing → stop
+  if (!audio.paused) {
+    audio.pause();
+    audio.currentTime = 0;
+    playBtn.innerHTML = "▶️ Play";
+    return;
+  }
+
+  // Reset src
+  if (audio.src) audio.src = "";
+
+  loadSongs();
+
+  // Show popup & overlay
+  songPopup.style.display = "block";
+  songOverlay.style.display = "block";
+
+  // RESET ANIMATION → IMPORTANT
+  songPopup.classList.remove("popup-show");
+  songOverlay.style.opacity = "0";
+  void songPopup.offsetWidth;  // force reflow (animation reset)
+
+  // Start fade-in animation
+  setTimeout(() => {
+    songPopup.classList.add("popup-show");
+    songOverlay.style.opacity = "1";
+  }, 10);
+});
+
+  // RESET PLAY BUTTON WHEN SONG ENDS
+  audio.addEventListener("ended", () => {
+    playBtn.innerHTML = "▶️ Play";
+  });
+
+};
+
+</script>
+
+<script>  
+document.addEventListener("click", () => {  
+  if (!document.fullscreenElement) {  
+    document.documentElement.requestFullscreen().catch(err => {  
+      console.warn("Fullscreen error:", err);  
+    });  
+  }  
+});  
+</script>  <script>  
+  const heartName = document.getElementById('heartName');  
+  let toggled = false; // false means original text  
+  
+  heartName.addEventListener('click', () => {  
+    if (!toggled) {  
+      heartName.textContent = heartName.textContent.replace('𝚂𝙰𝙱𝙰𝙽𝙰', '𝚈𝙾𝚄');  
+    } else {  
+      heartName.textContent = heartName.textContent.replace('𝚈𝙾𝚄', '𝚂𝙰𝙱𝙰𝙽𝙰');  
+    }  
+    toggled = !toggled; // flip state  
+  });  
+</script>    <div class="card" role="main" aria-labelledby="title">  <div class="timer" aria-live="polite">  
+  <div class="big" id="display">--:--:--:--</div>  
+  <div class="parts" id="parts">  
+    <div class="part"><div class="num" id="days">--</div><div class="txt">Days</div></div>  
+    <div class="part"><div class="num" id="hours">--</div><div class="txt">Hours</div></div>  
+    <div class="part"><div class="num" id="minutes">--</div><div class="txt">Minutes</div></div>  
+    <div class="part"><div class="num" id="seconds">--</div><div class="txt">Seconds</div></div>  
+  </div>  
+</div>  
+
+<h1 id="title">Countdown until I see you</h1>  
+<p class="lead">Every second brings me closer to you 💕</p>  
+
+<div class="controls">  
+  <input id="dt" type="datetime-local" aria-label="Choose meeting date/time">  
+  <button id="saveBtn" class="secondary">I Meet Her Again 🥰</button>  
+  <button id="playBtn">▶️ Play</button>  
+</div>
+
+
+<p class="small-note">If the time is in the future the timer counts down; otherwise it shows elapsed time.</p>
+
+  </div>    <div id="hearts" aria-hidden="true"></div>  <script>
+(function(){  
+  const dtInput = document.getElementById('dt');  
+  const saveBtn = document.getElementById('saveBtn');  
+  const playBtn = document.getElementById('playBtn');  
+  const display = document.getElementById('display');  
+  const daysEl = document.getElementById('days');  
+  const hoursEl = document.getElementById('hours');  
+  const minutesEl = document.getElementById('minutes');  
+  const secondsEl = document.getElementById('seconds');  
+  const heartsContainer = document.getElementById('hearts');  
+  
+  const firebaseURL = "https://time-untill-see-you-default-rtdb.firebaseio.com/sabanaTime.json";
+
+// 🔥 Helper functions  
+function isOnline() {  
+  return navigator.onLine;  
+}  
+
+// ===============================
+// NEW FETCH FUNCTION
+// ===============================
+async function fetchFromFirebase() {  
+  try {  
+    const res = await fetch(firebaseURL);  
+    if (!res.ok) throw new Error("Firebase fetch failed");  
+    return await res.json();  
+  } catch (err) {  
+    console.warn("⚠️ Firebase fetch failed:", err);  
+    return null;  
+  }  
+}  
+
+// ===============================
+// NEW SAVE FUNCTION
+// ===============================
+async function saveToFirebase(timeObj) {  
+  try {  
+    await fetch(firebaseURL, {  
+      method: "PUT",  
+      headers: { "Content-Type": "application/json" },  
+      body: JSON.stringify(timeObj)  
+    });  
+    console.log("🔥 Saved to Firebase:", timeObj);  
+  } catch (err) {  
+    console.warn("⚠️ Firebase save failed:", err);  
+    localStorage.setItem("pendingSync", JSON.stringify(timeObj));  
+  }  
+}  
+
+// Pending sync if offline earlier  
+async function syncIfPending() {  
+  const pending = localStorage.getItem("pendingSync");  
+  if (pending && isOnline()) {  
+    await saveToFirebase(JSON.parse(pending));  
+    localStorage.removeItem("pendingSync");  
+    console.log("🔁 Synced pending local data to Firebase");  
+  }  
+}  
+
+// SONG POPUP  
+playBtn.addEventListener("click", () => {  
+  loadSongs();  
+  document.getElementById("songPopup").style.display = "block";  
+});  
+
+// ==========================================
+// NEW — SMART SYNC SYSTEM (FULL REPLACEMENT)
+// ==========================================
+
+function isNewer(a, b) {
+  return new Date(a.savedAt) > new Date(b.savedAt);
+}
+
+async function initSync() {  
+
+  let local = localStorage.getItem("sabanaTimeObj");
+  if (local) local = JSON.parse(local);
+
+  let firebase = await fetchFromFirebase();
+
+  // If nothing exists anywhere
+  if (!local && !firebase) {
+    console.log("No time found.");
+    return update();
+  }
+
+  // CASE A — Only Firebase exists → load to local
+  if (!local && firebase) {
+    localStorage.setItem("sabanaTimeObj", JSON.stringify(firebase));
+    dtInput.value = firebase.time;
+    console.log("⬇️ Firebase → Local");
+    return update();
+  }
+
+  // CASE B — Only Local exists → push to Firebase
+  if (local && !firebase) {
+    console.log("⬆️ Local → Firebase");
+    saveToFirebase(local);
+    dtInput.value = local.time;
+    return update();
+  }
+
+  // CASE C — Both exist → compare timestamps
+  if (isNewer(local, firebase)) {
+    console.log("⬆️ Local is newer → Firebase updated");
+    saveToFirebase(local);
+    dtInput.value = local.time;
+  } else {
+    console.log("⬇️ Firebase is newer → Local updated");
+    localStorage.setItem("sabanaTimeObj", JSON.stringify(firebase));
+    dtInput.value = firebase.time;
+  }
+
+  update();
+}
+
+audio.addEventListener("ended", () => {
+  playBtn.innerHTML = "▶️ Play";
+});
+  
+  window.addEventListener("online", syncIfPending);  
+  
+  // ❤️ Heart animation (same as before)  
+  const photos = [  
+    "love.jpg","love2.jpg","love3.jpg","love4.jpg","love5.jpg","love6.jpg",  
+    "love7.jpg","love8.jpg","love9.jpg","love10.jpg","love11.jpg","love12.jpg","love13.jpg","love14.jpg","love15.jpg","love16.jpg"  
+  ];  
+  const heartPath = "M50 91 C35 78, 5 56, 5 33 C5 20, 17 10, 30 12 C38 13.5, 45 19, 50 27 C55 19, 62 13.5, 70 12 C83 10, 95 20, 95 33 C95 56, 65 78, 50 91 Z";  
+  
+  function addOneHeart(src){  
+    const svgNS = "http://www.w3.org/2000/svg";  
+    const i = Date.now() % 10000;  
+    const svg = document.createElementNS(svgNS, "svg");  
+    svg.setAttribute("viewBox", "0 0 100 100");  
+    svg.classList.add("photo-heart");  
+    svg.style.left = Math.round(Math.random()*80) + "%";  
+    svg.style.setProperty("--tilt", (Math.random()*40 - 20) + "deg");   
+    const dur = 15 + Math.round(Math.random()*6);  
+    svg.style.animationName = "rise";  
+    svg.style.animationDuration = dur + "s";  
+  
+    const clipId = "clipHeart" + i + "-" + Math.floor(Math.random()*10000);  
+    const defs = document.createElementNS(svgNS, "defs");  
+    const clipPath = document.createElementNS(svgNS, "clipPath");  
+    clipPath.setAttribute("id", clipId);  
+    const path = document.createElementNS(svgNS, "path");  
+    path.setAttribute("d", heartPath);  
+    clipPath.appendChild(path);  
+    defs.appendChild(clipPath);  
+    svg.appendChild(defs);  
+  
+    const img = document.createElementNS(svgNS, "image");  
+    img.setAttributeNS("http://www.w3.org/1999/xlink", "href", src);  
+    img.setAttribute("width", "100%");  
+    img.setAttribute("height", "100%");  
+    img.setAttribute("preserveAspectRatio", "xMidYMid slice");  
+    img.setAttribute("clip-path", "url(#" + clipId + ")");  
+    svg.appendChild(img);  
+  
+    const outline = document.createElementNS(svgNS, "path");  
+    outline.setAttribute("d", heartPath);  
+    outline.setAttribute("fill", "none");  
+    outline.setAttribute("stroke", "rgba(255,107,158,0.95)");  
+    outline.setAttribute("stroke-width", "2.5");  
+    svg.appendChild(outline);  
+  
+    heartsContainer.appendChild(svg);  
+    setTimeout(()=>{ svg.remove(); }, dur*1000);  
+  }  
+  
+  setInterval(()=>{  
+    const idx = Math.floor(Math.random()*photos.length);  
+    addOneHeart(photos[idx]);  
+  },5000);  
+  addOneHeart(photos[0]);  
+  
+  function pad2(n){ return n.toString().padStart(2,'0'); }  
+  function getTargetValue(){ return dtInput.value || localStorage.getItem("sabanaTime") || ""; }  
+  
+  function update(){  
+    const val = getTargetValue();  
+    if(!val){  
+      display.textContent="--:--:--:--";  
+      daysEl.textContent=hoursEl.textContent=minutesEl.textContent=secondsEl.textContent="--";  
+      return;  
+    }  
+    const target=new Date(val);  
+    const now=new Date();  
+    let diffMs=now-target;  
+    const negative=diffMs<0;  
+    diffMs=Math.abs(diffMs);  
+    const totalSeconds=Math.floor(diffMs/1000);  
+    const seconds=totalSeconds%60;  
+    const totalMinutes=Math.floor(totalSeconds/60);  
+    const minutes=totalMinutes%60;  
+    const totalHours=Math.floor(totalMinutes/60);  
+    const hours=totalHours%24;  
+    const days=Math.floor(totalHours/24);  
+    const sign=negative?"-":"";  
+    display.textContent=sign+pad2(days)+":"+pad2(hours)+":"+pad2(minutes)+":"+pad2(seconds);  
+    daysEl.textContent=days;  
+    hoursEl.textContent=pad2(hours);  
+    minutesEl.textContent=pad2(minutes);  
+    secondsEl.textContent=pad2(seconds);  
+  }  
+  
+  const saved=localStorage.getItem("sabanaTime");  
+  if(saved){ dtInput.value=saved; }  
+  dtInput.addEventListener("input", async () => {
+  const val = dtInput.value;
+  if (!val) return;
+
+  // NEW — full object for sync logic
+  const timeObj = {
+    time: val,
+    savedAt: new Date().toISOString()
+  };
+
+  // Save locally (new format)
+  localStorage.setItem("sabanaTimeObj", JSON.stringify(timeObj));
+
+  update();
+
+  // Save to Firebase
+  if (isOnline()) {
+    await saveToFirebase(timeObj);
+    console.log("🟢 Manual update synced to Firebase");
+  } else {
+    localStorage.setItem("pendingSync", JSON.stringify(timeObj));
+    console.log("🟡 Offline — manual update saved locally");
+  }
+});
+  
+  saveBtn.addEventListener("click", () => {
+
+  const now = new Date();
+  const pad = n => n.toString().padStart(2,'0');
+
+  // NEW — ISO timestamp for the actual time user saved
+  const localStr =
+    now.getFullYear()+"-"+pad(now.getMonth()+1)+"-"+pad(now.getDate())+
+    "T"+pad(now.getHours())+":"+pad(now.getMinutes())+":"+pad(now.getSeconds());
+
+  // NEW — FULL OBJECT with timestamp
+  const timeObj = {
+    time: localStr,
+    savedAt: new Date().toISOString()   // accurate comparison marker
+  };
+
+  // Update UI
+  dtInput.value = localStr;
+  saveBtn.textContent = "Reset Done 🥰";
+  setTimeout(() => saveBtn.textContent = "I Meet Her Again 🥰", 1400);
+
+  // Save locally (NEW FORMAT)
+  localStorage.setItem("sabanaTimeObj", JSON.stringify(timeObj));
+
+  update();
+
+  // SAVE TO FIREBASE
+  if (isOnline()) {
+    saveToFirebase(timeObj);
+  } else {
+    localStorage.setItem("pendingSync", JSON.stringify(timeObj));
+    console.warn("💾 Offline — will sync later");
+  }
+});
+   
+  
+  
+  initSync();  
+  setInterval(update,1000);  
+})();  
+</script>
